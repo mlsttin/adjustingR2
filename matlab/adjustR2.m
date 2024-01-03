@@ -1,5 +1,7 @@
 function [R2inadj, R2in,R2oadj, R2o] = adjustR2(Xtr,ytr,lI,Xte,yte )
-%% 
+%%
+% authors: Agustin Lage Castellanos and Giancarlo Valente
+%          a.lagecastellanos@maastrichtuniversity.nl giancarlo.valente@maastrichtuniversity.nl
 % Xtr  n x p training X data
 % ytr  n x 1 training y data
 % lI   p x p regularization matrix

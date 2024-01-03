@@ -1,4 +1,7 @@
 #setwd('C://data/work/regcca/R2/codes4submission/R')
+# authors: Agustin Lage Castellanos and Giancarlo Valente
+#          a.lagecastellanos@maastrichtuniversity.nl giancarlo.valente@maastrichtuniversity.nl
+
 setwd('C://Users//giancarlo.valente//OneDrive - Maastricht University//R2 Project//codes4submission//R');
 source('adjustR2.R') # load function
 nsteps    <- 20      # defing number of steps

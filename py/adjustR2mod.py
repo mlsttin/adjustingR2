@@ -1,4 +1,6 @@
 import numpy as np
+# authors: Agustin Lage Castellanos and Giancarlo Valente
+#          a.lagecastellanos@maastrichtuniversity.nl giancarlo.valente@maastrichtuniversity.nl
 
 def adjustR2(Xtr, ytr, lI=None, Xte=None, yte=None):
     # Xtr  n x p training X data

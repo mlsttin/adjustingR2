@@ -1,4 +1,6 @@
 clc;clearvars;close all;
+% authors: Agustin Lage Castellanos and Giancarlo Valente
+%          a.lagecastellanos@maastrichtuniversity.nl giancarlo.valente@maastrichtuniversity.nl
 nsteps    = 100;                            % number of training set sizes
 nrep      = 50;                             % number of test set sizes
 ntr_array = floor(linspace(50,500,nsteps)); % create training set size array

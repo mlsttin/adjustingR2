@@ -1,4 +1,7 @@
 adjustR2 <- function(Xtr, ytr, lI = NULL, Xte = NULL, yte = NULL) {
+# authors: Agustin Lage Castellanos and Giancarlo Valente
+#          a.lagecastellanos@maastrichtuniversity.nl giancarlo.valente@maastrichtuniversity.nl
+
   # Xtr  n x p training X data
   # ytr  n x 1 training y data
   # lI   p x p regularization matrix
