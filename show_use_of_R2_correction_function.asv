@@ -1,0 +1,23 @@
+clc;clear all;close all;
+nsteps    = 20;
+ntr_array = floor(linspace(50,100,nsteps));
+nte_array = zeros(1,nsteps) + 500;
+p         = 10;
+b         = randn(p,1);
+s         = 1;
+for it = 1:nsteps
+% training data             % test data
+  ntr    = ntr_array(it);   nte = nte_array(it);
+    Xtr  = randn(ntr,p);    Xte =   randn(nte,p);
+     etr = s*randn(ntr,1);  ete = s*randn(nte,1);
+     ytr = Xtr*b + etr;     yte = Xte*b + ete;  
+     [R2inadj(it), R2in(it), R2outAdj(it), R2o(it)]  =  adjustR2(Xtr,ytr,0,Xte,yte );
+
+end
+%%
+figure('Color',[1,1,1]);
+subplot(221);
+plot(ntr_array,R2in); hold all
+plot(ntr_array,R2inadj,'LineWidth',2); 
+xlabel('training set size');ylabel('R2')
+              

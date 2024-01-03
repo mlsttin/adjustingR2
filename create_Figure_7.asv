@@ -1,0 +1,126 @@
+% clc;clear all;close all
+% outputfolder  = fullfile(pwd,'output');   regmeth       = 'Ridge';
+% simtype       = 'modelcomparison';  pSmall = 10;
+% m1            = load([outputfolder,filesep,simtype,'Ridge_p',num2str(pSmall),'.mat']); % Big   Model
+% % m2            = load([outputfolder,filesep,simtype,'Ridge_p',num2str(pSmall),'.mat']); % Small Model
+%% define graphical parameters here
+fs = 10;
+figure(234);clf, set(gcf,'units','centimeters','position',[3 1 29.5 20.5],'color',[1 1 1])
+yl     = [-0.1 0.5];  % ylimits
+yldiff = [-0.3 0.24]; % ylimits difference R2 subplot
+h0 = annotation('textbox', [ 0, .90,   0.6-0.2, 0.05],  'string', '\textbf{In Sample}',...
+    'VerticalAlignment','middle','horizontalAlignment','center','interpreter','Latex','fontSize',fs+6,'EdgeColor',[1,1,1])
+
+h0 = annotation('textbox', [ 0.46, .90,   0.6-0.2, 0.05],  'string', '\textbf{Out of Sample}',...
+    'VerticalAlignment','middle','horizontalAlignment','center','interpreter','Latex','fontSize',fs+6,'EdgeColor',[1,1,1])
+
+
+h0 = annotation('textbox', [ 0.23, .95,   0.6, 0.05],  'string', ['\textbf{Model 1 $p_{1} = $}',num2str(m1.p), ',  \textbf{Model 2 $p_{2} = $}',num2str(m1.p1) ],...
+    'VerticalAlignment','middle','horizontalAlignment','center','interpreter','Latex','fontSize',fs+6,'EdgeColor',[1,1,1])
+textYshift1 = 0; textYshift2 = 0;
+textXshift1 = 80;          
+%%  In sample Block
+s1 = subplot(321);
+l5 = plot(narray,median(R2tr1,2),'LineWidth',1,'color',[0 0 0]); hold all;
+bootR2tr = bootstrp(1000,@median,R2tr1');qR2tr = quantile(bootR2tr,[.025 .975]);       % bootstrap and quantiles
+fill([narray flip(narray)],[qR2tr(1,:) flip(qR2tr(2,:))],[.6 .6 .6],'facealpha',.7);% show quantiles
+l6 = plot(narray,median(m1.R2adj,2),'linewidth',1,'color',[ 0.5412    0.1686    0.8863],'LineStyle','-')
+bootR2adj = bootstrp(1000,@median,m1.R2adj');  qR2tradj = quantile(bootR2adj,[.025 .975]);% bootstrap and quantiles
+fill([narray flip(narray)],[qR2tradj(1,:) flip(qR2tradj(2,:))],[ 0.5412    0.1686    0.8863],'facealpha',.4);% show quantiles
+xlim([narray(1) narray(end)])
+l4 = plot([narray(1) narray(end)],1-[m1.snrTHmc m1.snrTHmc],'color', [0 1 0],'LineWidth',2,'LineStyle','--');
+h0 = text(narray(1)-textXshift1,textYshift1 ,'\textbf{$R^2$} \textbf{Model 1}','Rotation',90,'interpreter','Latex','fontSize',fs+6)
+% h1 = text(mean(narray), 0.4 ,['$p =$ ', num2str(m1.p)],'Rotation',0,'interpreter','Latex','fontSize',fs+6)
+xlabel('$\mathbf{n_{tr}}$','interpreter','Latex','fontSize',fs+4); %xlim([narray(1) narray(end)])
+set(gca,'box','off','FontSize',fs+4);h=gca; h.XAxis.TickLength = [0 0]; 
+ylim(yl)
+l = legend([l4  l5 l6],{'$R^2$','$\hat{R}^2$','$\hat{R}^2_{adj}$'},'interpreter','latex','Fontsize',10,'fontSize',fs,'location','northeast','FontSize',fs+2);
+l.Position = l.Position + [0.07 -0.01 0 0]; %moving the legend a tiny bit
+legend boxoff 
+
+s2 = subplot(323);
+l5 = plot(narray,median(R2tr11,2),'LineWidth',1,'color',[0 0 0]); hold all;
+bootR2tr = bootstrp(1000,@median,R2tr11');qR2tr = quantile(bootR2tr,[.025 .975]);       % bootstrap and quantiles
+fill([narray flip(narray)],[qR2tr(1,:) flip(qR2tr(2,:))],[.6 .6 .6],'facealpha',.7);% show quantiles
+l6 = plot(narray,median(m1.R2adj1,2),'linewidth',1,'color',[ 0.5412    0.1686    0.8863],'LineStyle','-')
+bootR2adj = bootstrp(1000,@median,m1.R2adj1');  qR2tradj = quantile(bootR2adj,[.025 .975]);% bootstrap and quantiles
+fill([narray flip(narray)],[qR2tradj(1,:) flip(qR2tradj(2,:))],[ 0.5412    0.1686    0.8863],'facealpha',.4);% show quantiles
+xlim([narray(1) narray(end)])
+l4 = plot([narray(1) narray(end)],1-[ m1.snrTHmc1  m1.snrTHmc1],'color', [0 1 0],'LineWidth',2,'LineStyle','--');
+h0 = text(narray(1)-textXshift1,textYshift2 ,'\textbf{$R^2$} \textbf{Model 2}','Rotation',90,'interpreter','Latex','fontSize',fs+6)
+% h1 = text(mean(narray), 0.4 ,['$p =$ ', num2str(m1.p1)],'Rotation',0,'interpreter','Latex','fontSize',fs+6)
+xlabel('$\mathbf{n_{tr}}$','interpreter','Latex','fontSize',fs+4); %xlim([narray(1) narray(end)])
+set(gca,'box','off','FontSize',fs+4);h=gca; h.XAxis.TickLength = [0 0]; 
+ylim(yl)
+
+
+s3 = subplot(325);
+l5 = plot(narray,median(R2tr1 - R2tr11,2),'LineWidth',1,'color',[0 0 0]); hold all;
+bootR2tr = bootstrp(1000,@median,(R2tr1 - R2tr11)');qR2tr = quantile(bootR2tr,[.025 .975]);       % bootstrap and quantiles
+fill([narray flip(narray)],[qR2tr(1,:) flip(qR2tr(2,:))],[.6 .6 .6],'facealpha',.7);% show quantiles
+l6 = plot(narray,median(m1.R2adj - m1.R2adj1,2),'linewidth',1,'color',[ 0.5412    0.1686    0.8863],'LineStyle','-')
+bootR2adj = bootstrp(1000,@median,(m1.R2adj - m1.R2adj1)');  qR2tradj = quantile(bootR2adj,[.025 .975]);% bootstrap and quantiles
+fill([narray flip(narray)],[qR2tradj(1,:) flip(qR2tradj(2,:))],[ 0.5412    0.1686    0.8863],'facealpha',.4);% show quantiles
+xlim([narray(1) narray(end)])
+% here should flip m2 - m1 since the ground truth is 1 - snrTH
+l4 = plot([narray(1) narray(end)],-[ m1.snrTHmc - m1.snrTHmc1  m1.snrTHmc - m1.snrTHmc1],'color', [0 1 0],'LineWidth',2,'LineStyle','--');
+plot([narray(1) narray(end)],[0 0 ],'k--')
+h0 = text(narray(1)-textXshift1,-0.2 ,'\textbf{$R^2_{M1}$} - \textbf{$R^2_{M2}$}','Rotation',90,'interpreter','Latex','fontSize',fs+6)
+% h1 = text(mean(narray), 0.2 ,['$R^2_{p=', num2str(m1.p),'} - R^2_{p=', num2str(m1.p1),'}$'],'Rotation',0,'interpreter','Latex','fontSize',fs+6)
+xlabel('$\mathbf{n_{tr}}$','interpreter','Latex','fontSize',fs+4); %xlim([narray(1) narray(end)])
+set(gca,'box','off','FontSize',fs+4);h=gca; h.XAxis.TickLength = [0 0]; 
+ylim(yldiff);
+
+
+%%  Out-of-Sample Blocl
+s4 = subplot(322);
+l5 = plot(narray,median(m1.R2te,2),'LineWidth',1,'color',[0 0 0]); hold all;
+bootR2te = bootstrp(1000,@median,m1.R2te');qR2te = quantile(bootR2te,[.025 .975]);       % bootstrap and quantiles
+fill([narray flip(narray)],[qR2te(1,:) flip(qR2te(2,:))],[.6 .6 .6],'facealpha',.7);% show quantiles
+l6 = plot(narray,median(m1.R2outAdj,2),'linewidth',1,'color',[ 0.5412    0.1686    0.8863],'LineStyle','-')
+bootR2adj = bootstrp(1000,@median,m1.R2outAdj');  qR2tradj = quantile(bootR2adj,[.025 .975]);% bootstrap and quantiles
+fill([narray flip(narray)],[qR2tradj(1,:) flip(qR2tradj(2,:))],[ 0.5412    0.1686    0.8863],'facealpha',.4);% show quantiles
+xlim([narray(1) narray(end)])
+l4 = plot([narray(1) narray(end)],1-[m1.snrTHmc m1.snrTHmc],'color', [0 1 0],'LineWidth',2,'LineStyle','--');
+% h1 = text(mean(narray), 0.4 ,['$p =$ ', num2str(m1.p)],'Rotation',0,'interpreter','Latex','fontSize',fs+6)
+
+xlabel('$\mathbf{n_{tr}}$','interpreter','Latex','fontSize',fs+4); %xlim([narray(1) narray(end)])
+set(gca,'box','off','FontSize',fs+4);h=gca; h.XAxis.TickLength = [0 0]; 
+ylim(yl)
+
+
+s5 = subplot(324);
+      l5 = plot(narray,median(m1.R2te1,2),'LineWidth',1,'color',[0 0 0]); hold all;
+bootR2te = bootstrp(1000,@median,m1.R2te1');qR2te = quantile(bootR2te,[.025 .975]);       % bootstrap and quantiles
+fill([narray flip(narray)],[qR2te(1,:) flip(qR2te(2,:))],[.6 .6 .6],'facealpha',.7);% show quantiles
+l6 = plot(narray,median(m1.R2outAdj1,2),'linewidth',1,'color',[ 0.5412    0.1686    0.8863],'LineStyle','-')
+bootR2adj = bootstrp(1000,@median,m1.R2outAdj1');  qR2tradj = quantile(bootR2adj,[.025 .975]);% bootstrap and quantiles
+fill([narray flip(narray)],[qR2tradj(1,:) flip(qR2tradj(2,:))],[ 0.5412    0.1686    0.8863],'facealpha',.4);% show quantiles
+xlim([narray(1) narray(end)])
+l4 = plot([narray(1) narray(end)],1-[m1.snrTHmc1 m1.snrTHmc1],'color', [0 1 0],'LineWidth',2,'LineStyle','--');
+% h1 = text(mean(narray), 0.4 ,['$p =$ ', num2str(m1.p1)],'Rotation',0,'interpreter','Latex','fontSize',fs+6)
+
+xlabel('$\mathbf{n_{tr}}$','interpreter','Latex','fontSize',fs+4); %xlim([narray(1) narray(end)])
+set(gca,'box','off','FontSize',fs+4);h=gca; h.XAxis.TickLength = [0 0]; 
+ylim(yl)
+
+s3 = subplot(326);hold all
+ l5 = plot(narray,median(m1.R2te - m1.R2te1,2),'LineWidth',1,'color',[0 0 0]); hold all;
+ bootR2te = bootstrp(1000,@median,(m1.R2te - m1.R2te1)');qR2tr = quantile(bootR2te,[.025 .975]);       % bootstrap and quantiles
+ fill([narray flip(narray)],[qR2tr(1,:) flip(qR2tr(2,:))],[.6 .6 .6],'facealpha',.7);% show quantiles
+l6 = plot(narray,median(m1.R2outAdj - m1.R2outAdj1,2),'linewidth',1,'color',[ 0.5412    0.1686    0.8863],'LineStyle','-')
+bootR2adj = bootstrp(1000,@median,(m1.R2outAdj - m1.R2outAdj1)');  qR2tradj = quantile(bootR2adj,[.025 .975]);% bootstrap and quantiles
+ fill([narray flip(narray)],[qR2tradj(1,:) flip(qR2tradj(2,:))],[ 0.5412    0.1686    0.8863],'facealpha',.4);% show quantiles
+xlim([narray(1) narray(end)])
+% here should flip m2 - m1 since the ground truth is 1 - snrTH
+l4 = plot([narray(1) narray(end)],-[m1.snrTHmc - m1.snrTHmc1 m1.snrTHmc - m1.snrTHmc1],'color', [0 1 0],'LineWidth',2,'LineStyle','--');
+plot([narray(1) narray(end)],[0 0 ],'k--')
+% h1 = text(mean(narray), 0.2 ,['$R^2_{p=', num2str(m1.p),'} - R^2_{p=', num2str(m1.p1),'}$'],'Rotation',0,'interpreter','Latex','fontSize',fs+6)
+xlabel('$\mathbf{n_{tr}}$','interpreter','Latex','fontSize',fs+4); %xlim([narray(1) narray(end)])
+set(gca,'box','off','FontSize',fs+4);h=gca; h.XAxis.TickLength = [0 0]; 
+ylim(yldiff)
+
+%%
+namesave = 'model_comparison_simulations';
+set(gcf,'PaperOrientation','landscape','PaperPositionMode','auto','papertype',['A4']);
+print(gcf,'-dpdf',fullfile(pwd,namesave));

@@ -1,0 +1,16 @@
+function [Tirr Tpess Tcov Tsh algebraCheck ]=R2decomp_out_of_sample(X,Xtest,Y,Ytest,e, etest,b, lambdaI)
+%% useful matrices
+TSSte         =   sum( (Ytest-mean(Ytest)).^2);
+Xplus         =   inv(X'*X + lambdaI)*X';
+Htest         =   Xtest*Xplus;
+%%    R2 
+E             =  Ytest - Htest*Y;
+R2            =  1 - sum( E.^2  )./TSSte;% no centering
+%% decomposition
+ehat           =    Htest*e;
+Tirr           = - (etest'*etest)./TSSte;
+Tpess          = - ( ehat'*ehat)./TSSte; % look that the mean is not here
+Rte            =   (Xtest - Htest*X);
+Tsh            = - (b'*Rte'*Rte*b)/TSSte;
+Tcov           =   (-2*etest'*Rte*b  + 2*e'*Htest'*Rte*b + 2*etest'*Htest*e)./TSSte; % cross termsR2a            = R2Q + Tcov;
+algebraCheck   =   R2  - ( 1   + Tsh + Tirr +Tpess + Tcov); % has to be zero if the decompo
